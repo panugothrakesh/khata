@@ -35,7 +35,10 @@ const PAGE = 200;
  */
 const FULL = {
   key: true,
-  owner: true,
+  // `creator` rather than `owner`: ownership can be transferred, authorship
+  // cannot. Everything downstream judges a call by who signed it into
+  // existence, so that is the field worth paying for.
+  creator: true,
   attributes: true,
   payload: true,
 } as const;
@@ -88,7 +91,7 @@ export async function fetchAllSettlements(
     client.select(FULL).where(eq("kind", str(KIND_SETTLEMENT))),
   );
   return rows
-    .map((r) => decodeSettlement(r.key, r.owner, r.attributes, safeJson(r)))
+    .map((r) => decodeSettlement(r.key, r.creator, r.attributes, safeJson(r)))
     .filter((s): s is DecodedSettlement => s !== null);
 }
 
@@ -103,7 +106,7 @@ export async function fetchSettlementsByLeader(
       .where(and(eq("kind", str(KIND_SETTLEMENT)), eq("leader", leader))),
   );
   return rows
-    .map((r) => decodeSettlement(r.key, r.owner, r.attributes, safeJson(r)))
+    .map((r) => decodeSettlement(r.key, r.creator, r.attributes, safeJson(r)))
     .filter((s): s is DecodedSettlement => s !== null);
 }
 
@@ -128,7 +131,7 @@ export async function fetchOpenSignals(
       ),
   );
   return rows
-    .map((r) => decodeSignal(r.key, r.owner, r.attributes, safeJson(r)))
+    .map((r) => decodeSignal(r.key, r.creator, r.attributes, safeJson(r)))
     .filter((s): s is DecodedSignal => s !== null);
 }
 
@@ -148,7 +151,7 @@ export async function fetchSettleableSignals(
       ),
   );
   return rows
-    .map((r) => decodeSignal(r.key, r.owner, r.attributes, safeJson(r)))
+    .map((r) => decodeSignal(r.key, r.creator, r.attributes, safeJson(r)))
     .filter((s): s is DecodedSignal => s !== null);
 }
 
@@ -163,7 +166,7 @@ export async function fetchSignalsByLeader(
       .where(and(eq("kind", str(KIND_SIGNAL)), eq("leader", leader))),
   );
   return rows
-    .map((r) => decodeSignal(r.key, r.owner, r.attributes, safeJson(r)))
+    .map((r) => decodeSignal(r.key, r.creator, r.attributes, safeJson(r)))
     .filter((s): s is DecodedSignal => s !== null);
 }
 
@@ -178,6 +181,6 @@ export async function fetchSettlementsByAsset(
       .where(and(eq("kind", str(KIND_SETTLEMENT)), eq("asset", str(asset)))),
   );
   return rows
-    .map((r) => decodeSettlement(r.key, r.owner, r.attributes, safeJson(r)))
+    .map((r) => decodeSettlement(r.key, r.creator, r.attributes, safeJson(r)))
     .filter((s): s is DecodedSettlement => s !== null);
 }

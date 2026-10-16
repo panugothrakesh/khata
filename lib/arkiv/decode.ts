@@ -58,12 +58,19 @@ function bodyString(body: unknown, field: string): string {
   return typeof v === "string" ? v : "";
 }
 
-export type DecodedSignal = Signal & { entityKey: Hex; owner: Hex };
-export type DecodedSettlement = Settlement & { entityKey: Hex; owner: Hex };
+/**
+ * `creator` is the protocol's record of which wallet signed the transaction
+ * that created the entity. It is set by the engine, is not writable, and
+ * -- unlike `owner` -- cannot be transferred. It is therefore the only
+ * trustworthy answer to "who made this call", and the leaderboard uses it in
+ * preference to the self-declared `leader` attribute.
+ */
+export type DecodedSignal = Signal & { entityKey: Hex; creator: Hex };
+export type DecodedSettlement = Settlement & { entityKey: Hex; creator: Hex };
 
 export function decodeSignal(
   entityKey: Hex,
-  owner: Hex,
+  creator: Hex,
   attrs: Attributes,
   payload: unknown,
 ): DecodedSignal | null {
@@ -89,7 +96,7 @@ export function decodeSignal(
 
   return {
     entityKey,
-    owner,
+    creator,
     signalId,
     leader,
     asset,
@@ -109,7 +116,7 @@ export function decodeSignal(
 
 export function decodeSettlement(
   entityKey: Hex,
-  owner: Hex,
+  creator: Hex,
   attrs: Attributes,
   payload: unknown,
 ): DecodedSettlement | null {
@@ -139,7 +146,7 @@ export function decodeSettlement(
 
   return {
     entityKey,
-    owner,
+    creator,
     signalId,
     signalKey,
     leader,
