@@ -35,11 +35,24 @@ export function readClient() {
 
 export type ReadClient = ReturnType<typeof readClient>;
 
+/** A write client for an explicit key. Used by the seeder for its leaders. */
+export function walletClientFor(privateKey: Hex) {
+  return createWalletClient({
+    account: privateKeyToAccount(privateKey),
+    chain: tiramisu,
+    transport: http(rpcUrl()),
+  });
+}
+
+export type WriteClient = ReturnType<typeof walletClientFor>;
+
 /**
- * Only ever called from `scripts/`. Throws loudly rather than falling back to
- * a default key, because a silent fallback is how test keys end up in git.
+ * Reads the publisher key out of the environment, with no fallback.
+ *
+ * A default key here would be the single most likely way for a real key to end
+ * up committed, so every failure mode is an exception rather than a guess.
  */
-export function writeClient() {
+export function publisherPrivateKey(): Hex {
   const pk = process.env.KHATA_PUBLISHER_PRIVATE_KEY;
   if (!pk) {
     throw new Error(
@@ -57,12 +70,12 @@ export function writeClient() {
       "KHATA_PUBLISHER_PRIVATE_KEY is still the placeholder from .env.example.",
     );
   }
-  const account = privateKeyToAccount(pk as Hex);
-  return createWalletClient({
-    account,
-    chain: tiramisu,
-    transport: http(rpcUrl()),
-  });
+  return pk as Hex;
+}
+
+/** Only ever called from `scripts/`. Never constructed in browser code. */
+export function writeClient() {
+  return walletClientFor(publisherPrivateKey());
 }
 
 export const EXPLORER = "https://tiramisu.explorer.arkiv.network";

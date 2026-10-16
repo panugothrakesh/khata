@@ -14,7 +14,7 @@
 
 import { ExpirationTime, jsonToPayload } from "@arkiv-network/sdk";
 import type { Hex } from "viem";
-import { writeClient } from "./client";
+import { writeClient, type WriteClient } from "./client";
 import type { DecodedSignal } from "./decode";
 import type { Resolver } from "../execution/resolvers";
 import {
@@ -44,8 +44,8 @@ export async function settleSignal(
   signal: DecodedSignal,
   resolver: Resolver,
   now: number = Math.floor(Date.now() / 1000),
+  client: WriteClient = writeClient(),
 ): Promise<SettleResult> {
-  const client = writeClient();
   const leader = client.account.address as Hex;
 
   if (leader.toLowerCase() !== signal.leader.toLowerCase()) {

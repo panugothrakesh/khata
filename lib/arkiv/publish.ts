@@ -16,7 +16,7 @@
 
 import { ExpirationTime, jsonToPayload } from "@arkiv-network/sdk";
 import type { Hex } from "viem";
-import { writeClient } from "./client";
+import { writeClient, type WriteClient } from "./client";
 import {
   SIGNAL_GRACE_MINUTES,
   SIGNAL_TTL_MINUTES,
@@ -67,8 +67,8 @@ export function mintSignalId(leader: Hex, atSeconds: number): string {
 
 export async function publishSignal(
   input: PublishSignalInput,
+  client: WriteClient = writeClient(),
 ): Promise<PublishedSignal> {
-  const client = writeClient();
   const leader = client.account.address as Hex;
 
   const createdAt = Math.floor(Date.now() / 1000);

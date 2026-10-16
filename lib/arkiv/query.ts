@@ -170,6 +170,26 @@ export async function fetchSignalsByLeader(
     .filter((s): s is DecodedSignal => s !== null);
 }
 
+/**
+ * Reads one signal back by its entity key.
+ *
+ * Used by the settle path: the receipt is built from what Arkiv actually
+ * stored, not from what the publisher believes it sent.
+ */
+export async function fetchSignalByKey(
+  entityKey: Hex,
+  client: ReadClient = readClient(),
+): Promise<DecodedSignal | null> {
+  const e = await client.getEntity(entityKey);
+  let payload: unknown = null;
+  try {
+    payload = e.toJson();
+  } catch {
+    payload = null;
+  }
+  return decodeSignal(entityKey, e.creator, e.attributes, payload);
+}
+
 /** Browse by asset — the filter a follower actually reaches for. */
 export async function fetchSettlementsByAsset(
   asset: string,
