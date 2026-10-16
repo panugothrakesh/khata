@@ -61,7 +61,7 @@ export function Foot() {
       demonstration.
       <br />
       <Link href="/">leaderboard</Link> · <a
-        href="https://github.com/"
+        href="https://github.com/panugothrakesh/khata"
         target="_blank"
         rel="noreferrer"
       >
