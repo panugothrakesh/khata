@@ -1,0 +1,33 @@
+{
+  "name": "khata",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "A tamper-evident ledger for trading calls, built on Arkiv.",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "publish-signal": "tsx --env-file-if-exists=.env scripts/publish-signal.ts",
+    "settle": "tsx --env-file-if-exists=.env scripts/settle.ts",
+    "query": "tsx --env-file-if-exists=.env scripts/query.ts",
+    "seed": "tsx --env-file-if-exists=.env scripts/seed.ts",
+    "whoami": "tsx --env-file-if-exists=.env scripts/whoami.ts"
+  },
+  "dependencies": {
+    "@arkiv-network/sdk": "0.8.1",
+    "next": "15.5.4",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "viem": "2.37.6"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.1",
+    "@types/react": "19.1.9",
+    "@types/react-dom": "19.1.7",
+    "tsx": "4.20.4",
+    "typescript": "5.9.2"
+  }
+}
