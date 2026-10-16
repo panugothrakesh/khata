@@ -1,5 +1,13 @@
 import type { NextConfig } from "next";
 
+/**
+ * GitHub Pages serves this project from /khata rather than from the domain
+ * root, so the base path is set at build time. Local `next dev` leaves it
+ * empty. Set KHATA_BASE_PATH when deploying anywhere else that is not a
+ * domain root.
+ */
+const basePath = process.env.KHATA_BASE_PATH ?? "";
+
 const config: NextConfig = {
   /**
    * Khata deploys as static files. There is no server, no API route and no
@@ -13,6 +21,10 @@ const config: NextConfig = {
    */
   output: "export",
   reactStrictMode: true,
+  basePath,
+  images: { unoptimized: true },
+  // GitHub Pages serves /leader/ rather than /leader, so emit directories.
+  trailingSlash: true,
 };
 
 export default config;
